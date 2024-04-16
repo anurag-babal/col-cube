@@ -1,0 +1,3 @@
+Ship_id,Prod_id,Ord_id,Cust_id,Sales,Discount,Order_Quantity,Profit,Shipping_Cost,Product_Base_Margin,Customer_Name,City,State,Country,Customer_Segment,Order_ID.x,Order_Date,Order_Priority,Product_Category,Product_Sub_Category,Order_ID.y,Ship_Mode,Ship_Date
+SHP_1,Prod_1,Ord_1,Cust_1,261.54,0.04,6,-213.25,35,0.8,MUHAMMED MACINTYRE,Kolkatta,West Bengal,India,SMALL BUSINESS,3,13-10-2010,LOW,OFFICE SUPPLIES,STORAGE & ORGANIZATION,3,REGULAR AIR,20-10-2010
+SHP_10,Prod_7,Ord_8,Cust_8,124.56,0.04,32,-14.33,2,0.53,NEOLA SCHNEIDER,Kolkatta,West Bengal,India,HOME OFFICE,807,23-11-2010,MEDIUM,OFFICE SUPPLIES,RUBBER BANDS,807,REGULAR AIR,24-11-2010
