@@ -1,0 +1,24 @@
+<cubestore name="cubestore">
+    <tablename name='sales' type='fact'>
+        <attribute is_part_of_lattice="true">Customer_Name</attribute>
+        <attribute is_part_of_lattice="true">City</attribute>
+        <attribute is_part_of_lattice="true">State</attribute>
+        <attribute is_part_of_lattice="true">Country</attribute>
+        <attribute is_part_of_lattice="true">Customer_Segment</attribute>
+        <attribute is_part_of_lattice="true">Order_ID</attribute>
+        <attribute is_part_of_lattice="true">Order_Priority</attribute>
+        <attribute is_part_of_lattice="true">Product_Category</attribute>
+        <attribute is_part_of_lattice="true">Order_Date</attribute>
+        <attribute is_part_of_lattice="true">Product_Sub_Category</attribute>
+        <attribute is_part_of_lattice="true">Ship_Mode</attribute>
+        <attribute is_part_of_lattice="true">Ship_Date</attribute>
+        <attribute is_part_of_lattice="false">Sales</attribute>
+        <attribute is_part_of_lattice="false">Discount</attribute>
+        <attribute is_part_of_lattice="false">Order_Quantity</attribute>
+        <attribute is_part_of_lattice="false">Shipping_Cost</attribute>
+        <attribute is_part_of_lattice="false">Product_Base_Margin</attribute>
+        <attribute is_part_of_lattice="false">Profit</attribute>
+    </tablename>
+    <aggr>sum</aggr>
+    <aggr>avg</aggr>
+</cubestore>
