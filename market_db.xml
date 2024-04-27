@@ -20,5 +20,6 @@
         <attribute is_part_of_lattice="false">Profit</attribute>
     </tablename>
     <aggr>sum</aggr>
-    <aggr>avg</aggr>
+    <aggr>max</aggr>
+    <aggr>min</aggr>
 </cubestore>
