@@ -48,25 +48,7 @@ void doOperations(int index)
         fileNames.push_back(fileName);
     }
     combination += ".text";
-
-    // for (int i = 0; i < facts.size(); i++)
-    // {
-    //     string fileName = facts[i];
-    //     fileName += ".dat";
-    //     fileNames.push_back(fileName);
-    // }
-    // // for(string s:fileNames){
-    //     cout<<s<<" ";
-    // }
-    freopen(combination.c_str(), "w", stdout);
-    // Open all files
-    //   for (int i = 0; i < numFiles; ++i) {
-    //     filePointers[i] = new ifstream(filenames[i]);
-    //     if (!filePointers[i]->is_open()) {
-    //       cerr << "Error opening file: " << filenames[i] << endl;
-    //       return 1;
-    //     }
-    //   }
+    freopen(combination.c_str(), "wb", stdout);
     vector<string> combString;
     string fileName = "/Users/sudhanshu/dm_project/COL-CUBE/cubestore/fact_sales/" + fileNames[0];
     ifstream inputFile(fileName);
@@ -110,40 +92,6 @@ void doOperations(int index)
         // cout << combString[i] << "\n";
         for (int i = 0; i < facts.size(); i++)
         {
-            // vector<double> values;
-            // string fileName = "/Users/sudhanshu/dm_project/COL-CUBE/cubestore/fact_sales/" + facts[i] + ".dat";
-            // ifstream inputFile(fileName);
-            // if (!inputFile.is_open())
-            // {
-            //     cerr << "Error opening file: " << fileName << endl;
-            //     continue; // Skip to the next file if unable to open
-            // }
-
-            // string line;
-            // while (getline(inputFile, line))
-            // {
-            //     // cout << line << endl;  // Write each line to stdout
-            //     if(line=="NA") line="0";
-            //     double num = stod(line);
-            //     values.push_back(num);
-                
-            //     // try
-            //     // {
-            //     //     cout<<line<<"\n";
-            //     //     double value = std::stod(line);
-            //     //     // std::cout << "Converted double value: " << value << std::endl;
-            //     // values.push_back(value);
-
-            //     // }
-            //     // catch (const std::invalid_argument &e)
-            //     // {
-            //     //     std::cerr << "Error: Invalid argument: " << e.what() <<" "<<line<< std::endl;
-            //     //     cout<<"Hello "<<line<<"\n";
-            //     //     return; // Return non-zero to indicate failure
-            //     // }
-            // }
-
-            // inputFile.close(); // Close the input file
             for (int j = 0; j < aggregates.size(); j++)
             {
                 doCalculations(combString[k], facts[i], aggregates[j], factsData[facts[i]][k]);
@@ -165,26 +113,10 @@ void doOperations(int index)
     cerr<<cnt<<"\n";
     fclose(stdout);
 }
-// for (auto& fileName : fileNames) {
-//         fileName="/Users/sudhanshu/dm_project/COL-CUBE/cubestore/fact_sales/"+fileName;
-//         ifstream inputFile(fileName);
-//         if (!inputFile.is_open()) {
-//             cerr << "Error opening file: " << fileName << endl;
-//             continue;  // Skip to the next file if unable to open
-//         }
-
-//         string line;
-//         while (getline(inputFile, line)) {
-//             cout << line << endl;  // Write each line to stdout
-//         }
-
-//         inputFile.close();  // Close the input file
-//     }
-
-//     fclose(stdout);
-// }
 int main()
 {
+    	ios::sync_with_stdio(false);
+  cin.tie(nullptr);
     freopen("dim_attr.txt", "r", stdin);
     freopen("output.txt", "wb", stdout);
     clock_t tStart = clock();
