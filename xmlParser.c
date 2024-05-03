@@ -8,8 +8,8 @@
 
 #define TYPE "type"
 #define NAME "name"
-// #define PATH "/Users/sudhanshu/dm_project/COL-CUBE"
-#define PATH "/home/arch/D/dm"
+#define PATH "/Users/sudhanshu/dm_project/COL-CUBE"
+// #define PATH "/home/arch/D/dm"
 #define COLNAME "attribute"
 #define TABLENAME "tablename"
 #define IS_PART_OF_LATTICE "is_part_of_lattice"
@@ -24,7 +24,7 @@
 struct Attribute {
   int length;
   char type[20];
-  char values[20][20];
+  char values[20][50];
 };
 
 void createFolder(const char *path) {

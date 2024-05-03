@@ -7,11 +7,12 @@ struct Attribute
 {
     int length;
     char type[20];
-    char values[20][20];
+    char values[20][50];
 };
 
 // string root = "/Users/sudhanshu/dm_project/COL-CUBE/cubestore/";
-string rootFolder = "/home/arch/D/dm/";
+// string rootFolder = "/home/arch/D/dm/";
+string rootFolder = "/Users/sudhanshu/dm_project/COL-CUBE/";
 string fileStorageFolder = rootFolder + "FileStorage/";
 string attrFilePath = rootFolder + "dim_attr.bin";
 string columnFolder = rootFolder + "cubestore/fact_sales/";
@@ -48,7 +49,6 @@ void doOperations(int index)
     cnt++;
     int numberOfCombinations = combinations[index].size();
     int numFiles = numberOfCombinations + facts.size();
-    ifstream* filePointers[numFiles];
     vector<string> fileNames;
     string combination = fileStorageFolder;
     for (int i = 0; i < numberOfCombinations; i++)
@@ -62,8 +62,9 @@ void doOperations(int index)
         fileName += ".dat";
         fileNames.push_back(fileName);
     }
-    combination += ".dat";
-    freopen(combination.c_str(), "wb", stdout);
+    combination += ".csv";
+    cerr<<combination<<"\n";
+    freopen(combination.c_str(), "w", stdout);
     vector<string> combString;
     string fileName = columnFolder + fileNames[0];
     ifstream inputFile(fileName, ios::binary | ios::in);
@@ -73,7 +74,7 @@ void doOperations(int index)
     }
 
     string line;
-    while (getline(inputFile, line))
+    while (getline(inputFile, line, '\0'))
     {
         // cout << line << endl;  // Write each line to stdout
         combString.push_back(line);
@@ -92,7 +93,7 @@ void doOperations(int index)
 
         string line;
         int j = 0;
-        while (getline(inputFile, line))
+        while (getline(inputFile, line, '\0'))
         {
             // cout << line << endl;  // Write each line to stdout
             combString[j] = combString[j] + " " + line;
@@ -119,8 +120,8 @@ void doOperations(int index)
         {
             for (const auto& inner_inner_pair : inner_pair.second)
             {
-                cout << outer_pair.first << " " << inner_pair.first << " " << inner_inner_pair.first
-                    << " " << inner_inner_pair.second << endl;
+                cout << outer_pair.first << "," << inner_pair.first << "," << inner_inner_pair.first
+                    << "," << inner_inner_pair.second << endl;
             }
         }
     }
@@ -131,8 +132,8 @@ void doOperations(int index)
 
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    // ios::sync_with_stdio(false);
+    // cin.tie(nullptr);
     ifstream attrFile(attrFilePath, ios::binary | ios::in);
     // freopen("output.txt", "wb", stdout);
     clock_t tStart = clock();
@@ -157,8 +158,8 @@ int main()
         }
     }
     attrFile.close();
-
-    for (int i = 1; i < facts.size(); i++)
+    // cerr<<aggregates.size()<<"\n";
+    for (int i = 0; i < facts.size(); i++)
     {
         vector<double> values;
         string fileName = columnFolder + facts[i] + ".dat";
@@ -170,13 +171,14 @@ int main()
         }
         string line;
         int limit = 0;
-        while (getline(inputFile, line, '\n') && limit < 3)
+        while (getline(inputFile, line, '\0'))
         {
-            cout << line << endl;  // Write each line to stdout
+            // cout << line << endl;  // Write each line to stdout
             if (line == "NA") line = "0";
+            // cerr<<line<<"\n";
             double num = stod(line);
             values.push_back(num);
-            limit++;
+            // limit++;
         }
 
         inputFile.close();
@@ -201,7 +203,7 @@ int main()
             return;
         };
     makeCombinations();
-    cout << combinations.size() << "\n";
+    // cout << combinations.size() << "\n";
     // for (int i = 0; i < combinations.size(); i++)
     // {
     //     cout << combinations[i].size() << " ";
@@ -213,6 +215,7 @@ int main()
     // }
     // freopen("output3.txt", "wb", stdout);
     mkdir(fileStorageFolder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    // for (int index = 0; index < 3; index++)
     for (int index = 0; index < combinations.size(); index++)
     {
         doOperations(index);

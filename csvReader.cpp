@@ -6,8 +6,8 @@
 #define MAX_LINE_LENGTH 512
 #define MAX_TOKENS 23 
 #define MAX_COL_DATA 100
-// #define PATH "/Users/sudhanshu/dm_project/COL-CUBE/cubestore/fact_sales/"
-#define PATH "/home/arch/D/dm/cubestore/fact_sales/"
+#define PATH "/Users/sudhanshu/dm_project/COL-CUBE/cubestore/fact_sales/"
+// #define PATH "/home/arch/D/dm/cubestore/fact_sales/"
 #define MAX_PATH_LENGTH 256
 
 using namespace std;
@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
         continue;
       }
       colData.assign(field, strnlen(field, MAX_LINE_LENGTH)); // Truncate if too long
-      colData.append("\n");
+      // colData.append("\n");
       colFile.write(colData.c_str(), colData.size()+1);
     }
     colFile.close();
