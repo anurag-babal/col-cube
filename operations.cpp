@@ -1,14 +1,28 @@
 #include <bits/stdc++.h>
 #include <sys/stat.h>
+
 using namespace std;
+
+struct Attribute
+{
+    int length;
+    char type[20];
+    char values[20][20];
+};
+
+// string root = "/Users/sudhanshu/dm_project/COL-CUBE/cubestore/";
+string rootFolder = "/home/arch/D/dm/";
+string fileStorageFolder = rootFolder + "FileStorage/";
+string attrFilePath = rootFolder + "dim_attr.bin";
+string columnFolder = rootFolder + "cubestore/fact_sales/";
+int cnt = 0;
 vector<vector<string>> combinations;
 vector<string> attributes;
 vector<string> facts;
 vector<string> aggregates;
 map<string, map<string, map<string, double>>> group;
-string path = "/Users/sudhanshu/dm_project/COL-CUBE/FileStorage/";
-int cnt=0;
-map<string,vector<double>> factsData;
+map<string, vector<double>> factsData;
+
 void doCalculations(string comb, string fact, string aggr, double val)
 {
     if (aggr == "sum")
@@ -28,14 +42,15 @@ void doCalculations(string comb, string fact, string aggr, double val)
         group[comb][fact][aggr] = min(val, group[comb][fact][aggr]);
     }
 }
+
 void doOperations(int index)
 {
     cnt++;
     int numberOfCombinations = combinations[index].size();
     int numFiles = numberOfCombinations + facts.size();
-    ifstream *filePointers[numFiles];
+    ifstream* filePointers[numFiles];
     vector<string> fileNames;
-    string combination = path;
+    string combination = fileStorageFolder;
     for (int i = 0; i < numberOfCombinations; i++)
     {
         string fileName = combinations[index][i];
@@ -47,11 +62,11 @@ void doOperations(int index)
         fileName += ".dat";
         fileNames.push_back(fileName);
     }
-    combination += ".text";
+    combination += ".dat";
     freopen(combination.c_str(), "wb", stdout);
     vector<string> combString;
-    string fileName = "/Users/sudhanshu/dm_project/COL-CUBE/cubestore/fact_sales/" + fileNames[0];
-    ifstream inputFile(fileName);
+    string fileName = columnFolder + fileNames[0];
+    ifstream inputFile(fileName, ios::binary | ios::in);
     if (!inputFile.is_open())
     {
         cerr << "Error opening file: " << fileName << endl; // Skip to the next file if unable to open
@@ -67,8 +82,8 @@ void doOperations(int index)
     inputFile.close(); // Close the input file
     for (int i = 1; i < numberOfCombinations; i++)
     {
-        string fileName = "/Users/sudhanshu/dm_project/COL-CUBE/cubestore/fact_sales/" + fileNames[i];
-        ifstream inputFile(fileName);
+        string fileName = columnFolder + fileNames[i];
+        ifstream inputFile(fileName, ios::binary | ios::in);
         if (!inputFile.is_open())
         {
             cerr << "Error opening file: " << fileName << endl;
@@ -98,101 +113,106 @@ void doOperations(int index)
             }
         }
     }
-    for (const auto &outer_pair : group)
+    for (const auto& outer_pair : group)
     {
-        for (const auto &inner_pair : outer_pair.second)
+        for (const auto& inner_pair : outer_pair.second)
         {
-            for (const auto &inner_inner_pair : inner_pair.second)
+            for (const auto& inner_inner_pair : inner_pair.second)
             {
                 cout << outer_pair.first << " " << inner_pair.first << " " << inner_inner_pair.first
-                     << " " << inner_inner_pair.second << endl;
+                    << " " << inner_inner_pair.second << endl;
             }
         }
     }
     group.clear();
-    cerr<<cnt<<"\n";
+    cerr << cnt << "\n";
     fclose(stdout);
 }
+
 int main()
 {
-    	ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-    freopen("dim_attr.txt", "r", stdin);
-    freopen("output.txt", "wb", stdout);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    ifstream attrFile(attrFilePath, ios::binary | ios::in);
+    // freopen("output.txt", "wb", stdout);
     clock_t tStart = clock();
     auto start = std::chrono::high_resolution_clock::now();
-    int numberOfAttributes, numberOfFacts, numberOfAggregates;
-    cin >> numberOfAttributes;
-    attributes.resize(numberOfAttributes);
-    for (string &s : attributes)
-    {
-        cin >> s;
-    }
-    cin >> numberOfFacts;
-    facts.resize(numberOfFacts);
-    for (string &s : facts)
-    {
-        cin >> s;
-    }
-    for (int i = 0; i < facts.size(); i++)
-        {
-            vector<double> values;
-            string fileName = "/Users/sudhanshu/dm_project/COL-CUBE/cubestore/fact_sales/" + facts[i] + ".dat";
-            ifstream inputFile(fileName);
-            if (!inputFile.is_open())
-            {
-                cerr << "Error opening file: " << fileName << endl;
-                continue; // Skip to the next file if unable to open
-            }
+    Attribute attribute;
 
-            string line;
-            while (getline(inputFile, line))
-            {
-                // cout << line << endl;  // Write each line to stdout
-                if(line=="NA") line="0";
-                double num = stod(line);
-                values.push_back(num);
-            }
-
-            inputFile.close(); 
-            factsData[facts[i]]=values;
+    // Read data loop with error handling
+    while (attrFile.read(reinterpret_cast<char*>(&attribute), sizeof(attribute))) {
+        if (attrFile.fail()) {
+            cerr << "Error reading attribute length." << endl;
+            break;
         }
-    cin >> numberOfAggregates;
-    aggregates.resize(numberOfAggregates);
-    for (string &s : aggregates)
-    {
-        cin >> s;
+        string type(attribute.type);
+        for (int i = 0; i < attribute.length; i++) {
+            if (type == "dim") {
+                attributes.push_back(attribute.values[i]);
+            } else if (type == "fact") {
+                facts.push_back(attribute.values[i]);
+            } else if (type == "aggr") {
+                aggregates.push_back(attribute.values[i]);
+            }
+        }
     }
+    attrFile.close();
+
+    for (int i = 1; i < facts.size(); i++)
+    {
+        vector<double> values;
+        string fileName = columnFolder + facts[i] + ".dat";
+        ifstream inputFile(fileName, ios::binary | ios::in);
+        if (!inputFile.is_open())
+        {
+            cerr << "Error opening file: " << fileName << endl;
+            continue; // Skip to the next file if unable to open
+        }
+        string line;
+        int limit = 0;
+        while (getline(inputFile, line, '\n') && limit < 3)
+        {
+            cout << line << endl;  // Write each line to stdout
+            if (line == "NA") line = "0";
+            double num = stod(line);
+            values.push_back(num);
+            limit++;
+        }
+
+        inputFile.close();
+        factsData[facts[i]] = values;
+    }
+    
     auto makeCombinations = [&]()
-    {
-        int total = pow(2, numberOfAttributes);
-        for (int i = 1; i < total; i++)
         {
-            vector<string> tempComb;
-            for (int j = 0; j < 31; j++)
+            int total = pow(2, attributes.size());
+            for (int i = 1; i < total; i++)
             {
-                if ((i >> j) & 1)
+                vector<string> tempComb;
+                for (int j = 0; j < 31; j++)
                 {
-                    tempComb.push_back(attributes[j]);
+                    if ((i >> j) & 1)
+                    {
+                        tempComb.push_back(attributes[j]);
+                    }
                 }
+                combinations.push_back(tempComb);
             }
-            combinations.push_back(tempComb);
-        }
-        return;
-    };
+            return;
+        };
     makeCombinations();
     cout << combinations.size() << "\n";
-    for (int i = 0; i < combinations.size(); i++)
-    {
-        cout << combinations[i].size() << " ";
-        for (int j = 0; j < combinations[i].size(); j++)
-        {
-            cout << combinations[i][j] << " ";
-        }
-        cout << "\n";
-    }
-    freopen("output3.txt", "wb", stdout);
-    mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    // for (int i = 0; i < combinations.size(); i++)
+    // {
+    //     cout << combinations[i].size() << " ";
+    //     for (int j = 0; j < combinations[i].size(); j++)
+    //     {
+    //         cout << combinations[i][j] << " ";
+    //     }
+    //     cout << "\n";
+    // }
+    // freopen("output3.txt", "wb", stdout);
+    mkdir(fileStorageFolder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     for (int index = 0; index < combinations.size(); index++)
     {
         doOperations(index);

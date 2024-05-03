@@ -1,4 +1,0 @@
-12
-Customer_Name City State Country Customer_Segment Order_ID Order_Priority Product_Category Order_Date Product_Sub_Category Ship_Mode Ship_Date 6
-Sales Discount Order_Quantity Shipping_Cost Product_Base_Margin Profit 3
-sum max min 
