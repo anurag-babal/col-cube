@@ -23,7 +23,7 @@ vector<string> facts;
 vector<string> aggregates;
 map<string, map<string, map<string, double>>> group;
 map<string, vector<double>> factsData;
-
+std::chrono::duration<double> time = std::chrono::duration<double>::zero();
 void doCalculations(string comb, string fact, string aggr, double val)
 {
     if (aggr == "sum")
@@ -114,6 +114,7 @@ void doOperations(int index)
             }
         }
     }
+    std::chrono::duration<double> startHere = std::chrono::high_resolution_clock::now();
     for (const auto& outer_pair : group)
     {
         for (const auto& inner_pair : outer_pair.second)
@@ -125,6 +126,8 @@ void doOperations(int index)
             }
         }
     }
+    std::chrono::duration<double> endHere = std::chrono::high_resolution_clock::now();
+    time+=endHere-startHere;
     group.clear();
     cerr << cnt << "\n";
     fclose(stdout);
@@ -220,12 +223,12 @@ int main()
     {
         doOperations(index);
     }
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    // std::this_thread::sleep_for(std::chrono::seconds(2));
 
     // Stop measuring time
     auto end = std::chrono::high_resolution_clock::now();
 
     // Calculate the duration
-    std::chrono::duration<double> duration = end - start;
+    std::chrono::duration<double> duration = end - start- time;
     cerr << "Time taken by the program: " << duration.count() << " seconds" << std::endl;
 }
