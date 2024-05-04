@@ -13,7 +13,7 @@ struct Attribute
 // string root = "/Users/sudhanshu/dm_project/COL-CUBE/cubestore/";
 // string rootFolder = "/home/arch/D/dm/";
 string rootFolder = "/Users/sudhanshu/dm_project/COL-CUBE/";
-string fileStorageFolder = rootFolder + "FileStorage/";
+string fileStorageFolder = rootFolder + "exp/";
 string attrFilePath = rootFolder + "dim_attr.bin";
 string columnFolder = rootFolder + "cubestore/fact_sales/";
 int cnt = 0;
@@ -23,7 +23,7 @@ vector<string> facts;
 vector<string> aggregates;
 map<string, map<string, map<string, double>>> group;
 map<string, vector<double>> factsData;
-std::chrono::duration<double> time = std::chrono::duration<double>::zero();
+// std::chrono::duration<double> time = std::chrono::duration<double>::zero();
 void doCalculations(string comb, string fact, string aggr, double val)
 {
     if (aggr == "sum")
@@ -96,7 +96,7 @@ void doOperations(int index)
         while (getline(inputFile, line, '\0'))
         {
             // cout << line << endl;  // Write each line to stdout
-            combString[j] = combString[j] + " " + line;
+            combString[j] = combString[j] + "," + line;
             j++;
         }
 
@@ -105,7 +105,7 @@ void doOperations(int index)
     // freopen("test.txt","w",stdout);
     for (int k = 0; k < combString.size(); k++)
     {
-        // cout << combString[i] << "\n";
+        // cerr << combString[k] << "\n";
         for (int i = 0; i < facts.size(); i++)
         {
             for (int j = 0; j < aggregates.size(); j++)
@@ -114,20 +114,25 @@ void doOperations(int index)
             }
         }
     }
-    std::chrono::duration<double> startHere = std::chrono::high_resolution_clock::now();
+    for(string s:combinations[index]){
+        cout<<s<<",";
+    }
+    cout<<"fact,aggr,value,aggr,value,aggr,value\n";
     for (const auto& outer_pair : group)
     {
         for (const auto& inner_pair : outer_pair.second)
         {
+            string output=outer_pair.first+","+inner_pair.first+",";
             for (const auto& inner_inner_pair : inner_pair.second)
             {
-                cout << outer_pair.first << "," << inner_pair.first << "," << inner_inner_pair.first
-                    << "," << inner_inner_pair.second << endl;
+                // cout << outer_pair.first << "," << inner_pair.first << "," << inner_inner_pair.first
+                //     << "," << inner_inner_pair.second << endl;
+                output+=inner_inner_pair.first+","+to_string(inner_inner_pair.second)+",";
             }
+            output.pop_back(); 
+            cout<<output<<"\n";
         }
     }
-    std::chrono::duration<double> endHere = std::chrono::high_resolution_clock::now();
-    time+=endHere-startHere;
     group.clear();
     cerr << cnt << "\n";
     fclose(stdout);
@@ -135,8 +140,8 @@ void doOperations(int index)
 
 int main()
 {
-    // ios::sync_with_stdio(false);
-    // cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
     ifstream attrFile(attrFilePath, ios::binary | ios::in);
     // freopen("output.txt", "wb", stdout);
     clock_t tStart = clock();
@@ -229,6 +234,6 @@ int main()
     auto end = std::chrono::high_resolution_clock::now();
 
     // Calculate the duration
-    std::chrono::duration<double> duration = end - start- time;
+    std::chrono::duration<double> duration = end - start;
     cerr << "Time taken by the program: " << duration.count() << " seconds" << std::endl;
 }
